@@ -55,6 +55,7 @@ class StudentRecordLockedError(Exception):
         super().__init__("This student's records are already locked and cannot be changed")
 
 if __name__ == "__main__":
+    failures = {} # shape: "row": raw dict, "error": reason
     raw_rows = [
         {"name": " Amara ", "scores": "92,85,78"},
         {"name": "Leo", "scores": "88,91,73"},
@@ -68,9 +69,8 @@ if __name__ == "__main__":
     students["name"] = students["name"].str.strip()
 
     # use pandas to parse the scores into a proper row
-    students["scores_split"] = str(students["scores"]).split(",")
+    # students["scores_split"] = str(students["scores"]).split(",")
     students["scores"] = pd.to_numeric(students["scores"], errors="coerce")
-
 
     students = students.drop_duplicates() # keeps first occurence by default
 
