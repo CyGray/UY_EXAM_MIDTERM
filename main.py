@@ -32,6 +32,14 @@ class Student():
     def name(self, name):
         raise StudentRecordLockedError()
 
+    @property
+    def scores(self):
+        return self._scores
+
+    @scores.setter
+    def scores(self, scores):
+        raise StudentRecordLockedError("The scores cannot be changed once the record has been locked")
+
     def __str__(self):
         return f"Name: {self.name}\nScores: {self.scores}\nAverage: {self.average}"
 
@@ -60,15 +68,16 @@ if __name__ == "__main__":
     students["name"] = students["name"].str.strip()
 
     # use pandas to parse the scores into a proper row
+    students["scores_split"] = str(students["scores"]).split(",")
     students["scores"] = pd.to_numeric(students["scores"], errors="coerce")
+
 
     students = students.drop_duplicates() # keeps first occurence by default
 
     # Parse each students df row into a Student object
-    
+
+    # Print student str and repr
     print(students)
-
-
 
 """
 From the scenario, it looks like we need to create a Student class with name and scores as its attributes.
@@ -81,10 +90,10 @@ add a condition that raises this custom exception.
 - Every student also needs overrides for its __str__ and __repr__
 
 In our main flow, we should first clean our data using Pandas
-- trim
-- parse the score string into numeric values (and we need to coerce invalid values to avoid crashing the flow)
-- drop duplicates without including in failures list or printing
-- Turn the now-cleaned rows into Student objects, with exception handling
+- trim (done)
+- parse the score string into numeric values (and we need to coerce invalid values to avoid crashing the flow) (blocked)
+- drop duplicates without including in failures list or printing (okay?)
+- Turn the now-cleaned rows into Student objects, with exception handling (blocked)
 - Every row add (batch builder) must print errors AND success
 - calculate student's ave score using numpy ops
 
